@@ -3,19 +3,19 @@
     <div class="bg" />
     <div class="box">
       <div class="title">智慧园区-登录</div>
-      <el-form ref="form">
+      <el-form ref="ruleForm" :model="ruleForm" :rules="rules">
         <el-form-item
           label="账号"
           prop="username"
         >
-          <el-input />
+          <el-input v-model="ruleForm.username" />
         </el-form-item>
 
         <el-form-item
           label="密码"
           prop="password"
         >
-          <el-input />
+          <el-input v-model="ruleForm.password" type="password" />
         </el-form-item>
 
         <el-form-item prop="remember">
@@ -23,7 +23,7 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" class="login_btn">登录</el-button>
+          <el-button type="primary" class="login_btn" @click="submitForm('ruleForm')">登录</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -31,9 +31,46 @@
 </template>
 
 <script>
-
+import {loginAPI} from '@/api/user'
 export default {
-  name: 'Login'
+  name: 'Login',
+  data() {
+    return {
+      ruleForm:
+        {
+          username: '',
+          password:''
+        }
+      ,
+      rules: {
+        username: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          {
+            min:5,max:10,message:'长度在5到10个字符',trigger:'blur'
+          }
+        ],
+        password:[{ required: true, message: '请输入密码', trigger: 'blur' },
+          {
+            min:5,max:10,message:'长度在5到10个字符',trigger:'blur'
+          }]
+      }
+    }
+  },
+  methods: {
+    // 提交时统一验证
+    submitForm(formName) {
+        this.$refs[formName].validate(async (valid) => {
+          if (valid) {
+            alert('submit!');
+            let res = await loginAPI(this.ruleForm)
+            console.log('res:',res);
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+      },
+  }
 
 }
 

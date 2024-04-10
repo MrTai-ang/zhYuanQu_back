@@ -14,6 +14,7 @@ import router from './router'
 // 注册svg
 import '@/icons'
 
+// 将element-ui中导出的所有组件，注册为全局组件
 Vue.use(ElementUI)
 
 Vue.config.productionTip = false
