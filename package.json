@@ -6,7 +6,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "report": "vue-cli-service build --report"
+    "report": "vue-cli-service build --report",
+    "lint": "eslint src/**/*.{js,vue} --fix"
   },
   "dependencies": {
     "axios": "^0.18.1",

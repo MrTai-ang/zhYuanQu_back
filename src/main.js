@@ -11,8 +11,12 @@ import store from './store'
 
 import router from './router'
 
+
 // 注册svg
 import '@/icons'
+
+// 导入premission.js
+import './permission'
 
 // 将element-ui中导出的所有组件，注册为全局组件
 Vue.use(ElementUI)
