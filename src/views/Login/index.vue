@@ -69,18 +69,15 @@ export default {
           // // console.log('res:', res)
           // this.$store.commit('user/setToken','123')
 
-         
-            await this.loginaction(this.ruleForm)
-            // 在登录之后判断要不要保存账户密码
-            if (this.rememberMe) {
-              localStorage.setItem('form_key', JSON.stringify(this.ruleForm))
-            }
-            else {
-              // 没勾选记住我
-              localStorage.removeItem('form_key')
-            }
-            this.$router.push('/')
-         
+          await this.loginaction(this.ruleForm)
+          // 在登录之后判断要不要保存账户密码
+          if (this.rememberMe) {
+            localStorage.setItem('form_key', JSON.stringify(this.ruleForm))
+          } else {
+            // 没勾选记住我
+            localStorage.removeItem('form_key')
+          }
+          this.$router.push('/')
         } else {
           console.log('error submit!!')
           return false
@@ -93,9 +90,7 @@ export default {
     const loginData = localStorage.getItem('form_key')
     if (loginData) {
       this.ruleForm = JSON.parse(loginData)
-      
     }
-
   }
 
 }

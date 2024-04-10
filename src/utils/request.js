@@ -31,9 +31,8 @@ service.interceptors.response.use(
       // 401表示token过期
       router.push('/login')
       store.commit('removeToken')
-
     }
-    Message.error(error.response.data.msg)  //对错误进行统一弹窗提示
+    Message.error(error.response.data.msg) // 对错误进行统一弹窗提示
     return Promise.reject(error)
   }
 )

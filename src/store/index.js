@@ -32,7 +32,6 @@ const store = new Vuex.Store({
       state.token = ''
       // 清除cookie中的token
       removeToken()
-
     }
   }
 })
