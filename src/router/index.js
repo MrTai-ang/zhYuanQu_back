@@ -74,6 +74,10 @@ export const routes = [
     }]
   },
   {
+    path: '/car/addMonthCard',
+    component: () => import('@/views/Car/CarCard/addMonthCard')
+  },
+  {
     path: '/pole',
     component: Layout,
     permission: 'pole',
@@ -90,6 +94,7 @@ export const routes = [
       meta: { title: '告警记录' }
     }]
   },
+
   {
     path: '/sys',
     component: Layout,
