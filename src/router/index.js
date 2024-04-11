@@ -78,6 +78,10 @@ export const routes = [
     component: () => import('@/views/Car/CarCard/addMonthCard')
   },
   {
+    path: '/park/addEnterprise',
+    component: () => import('@/views/Park/Enterprise/AddEnterprise')
+  },
+  {
     path: '/pole',
     component: Layout,
     permission: 'pole',

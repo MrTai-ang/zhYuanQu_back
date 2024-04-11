@@ -33,3 +33,4 @@ export function delteCardAPI(id) {
     method: 'DELETE'
   })
 }
+
