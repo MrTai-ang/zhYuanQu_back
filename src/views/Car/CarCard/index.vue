@@ -3,10 +3,10 @@
     <!-- 搜索区域 -->
     <div class="search-container">
       <span class="search-label">车牌号码：</span>
-      <el-input clearable placeholder="请输入内容" class="search-main" v-model="params.carNumber" />
+      <el-input v-model="params.carNumber" clearable placeholder="请输入内容" class="search-main" />
       <span class="search-label">车主姓名：</span>
-      <el-input clearable placeholder="请输入内容" class="search-main" v-model="params.personName" />
-      <span class="search-label"  >状态：</span>
+      <el-input v-model="params.personName" clearable placeholder="请输入内容" class="search-main" />
+      <span class="search-label">状态：</span>
       <el-select v-model="params.cardStatus">
         <el-option v-for="item in statusList" :key="item.value" :label="item.text" :value="item.value" />
       </el-select>
@@ -14,12 +14,16 @@
     </div>
     <!-- 新增删除操作区域 -->
     <div class="create-container">
-      <el-button type="primary">添加月卡</el-button>
-      <el-button>批量删除</el-button>
+      <el-button type="primary" @click="addMonthCard">添加月卡</el-button>
+      <el-button @click="batchDelete">批量删除</el-button>
     </div>
     <!-- 表格区域 -->
     <div class="table">
-      <el-table style="width: 100%" :data="list">
+      <el-table style="width: 100%" :data="list" @selection-change="handleSelectionChange">
+        <el-table-column
+          type="selection"
+          width="55"
+        />
         <!-- type=index 序号从0开始 -->
         <el-table-column type="index" label="序号" :index="indexMethod" />
         <el-table-column label="车主名称" prop="personName" />
@@ -32,17 +36,17 @@
           <template #default="scope">
             <el-button size="mini" type="text">续费</el-button>
             <el-button size="mini" type="text">查看</el-button>
-            <el-button size="mini" type="text">编辑</el-button>
-            <el-button size="mini" type="text">删除</el-button>
+            <!-- scope是作用域插槽，可以获取变量 -->
+            <el-button size="mini" type="text" @click="editCard(scope.row.id)">编辑</el-button>
+            <el-button size="mini" type="text" @click="deleteCard(scope.row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
     <div class="page-container">
       <el-pagination
-        :current-page="currentPage4"
         :page-sizes="[2, 4, 5, 8]"
-        :page-size="pageSize"
+        :page-size="2"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
         @size-change="handleSizeChange"
@@ -80,7 +84,7 @@
 </template>
 
 <script>
-import { getCardLsitAPI } from '@/api/card'
+import { getCardLsitAPI, delteCardAPI } from '@/api/card'
 export default {
   data() {
     return {
@@ -93,7 +97,8 @@ export default {
       },
       list: [],
       total: 0,
-      statusList: [{ text:'全部',value:null},{ text:'可用',value:'0'},{ text:'已过期',value:'1'}]
+      statusList: [{ text: '全部', value: null }, { text: '可用', value: '0' }, { text: '已过期', value: '1' }],
+      multipleSelection: []
     }
   },
   created() {
@@ -101,6 +106,16 @@ export default {
   },
 
   methods: {
+    editCard(id) {
+      console.log('id', id)
+      this.$router.push({
+        path: '/car/addMonthCard',
+        query: { id }
+      })
+    },
+    addMonthCard() {
+      this.$router.push('/car/addMonthCard')
+    },
     // 计算序号
     indexMethod(index) {
       return index + this.params.pageSize * (this.params.page - 1) + 1
@@ -118,7 +133,6 @@ export default {
     search() {
       this.params.page = 1
       this.getCardList()
-      
     },
 
     async getCardList() {
@@ -136,6 +150,43 @@ export default {
       console.log(`当前页: ${val}`)
       this.params.page = val
       this.getCardList()
+    },
+    handleSelectionChange(val) {
+      console.log('val:', val)
+      this.multipleSelection = val
+    },
+    batchDelete() {
+      if (this.multipleSelection.length <= 0) {
+        this.$message.warning('请先选择要删除的数据')
+        return
+      }
+      this.$confirm('您确定要删除这些数据吗', '温馨提示').then(async() => {
+        const ids = this.multipleSelection.map(item => item.id).toString()
+        await delteCardAPI(ids)
+        this.$message.success('批量删除成功')
+        this.getCardList()
+      }).catch(() => {
+
+      })
+    },
+    deleteCard(id) {
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async() => {
+        await delteCardAPI(id)
+        this.getCardList()
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     }
 
   }
