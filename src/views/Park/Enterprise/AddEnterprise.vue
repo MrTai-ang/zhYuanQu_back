@@ -136,10 +136,12 @@ export default {
             delete this.addForm.industryName
             delete this.addForm.rent
             this.$message.success('编辑成功')
-            await updateExterpriseAPI(this.addForm)
+              await updateExterpriseAPI(this.addForm)
+              this.$router.back()
           } else {
             await AddEnterprise(this.addForm)
-            this.$message.success('添加成功')
+              this.$message.success('添加成功')
+              this.$router.back()
           }
         } catch (err) {
           this.$message.error('失败')
