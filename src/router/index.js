@@ -74,6 +74,10 @@ export const routes = [
     }]
   },
   {
+    path: '/enterpriseDetail/:id',
+    component: () => import('@/views/Park/Enterprise/EnterpriseDetail')
+  },
+  {
     path: '/car/addMonthCard',
     component: () => import('@/views/Car/CarCard/addMonthCard')
   },

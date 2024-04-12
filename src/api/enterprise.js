@@ -63,3 +63,9 @@ export function rentingOut(id) {
 
     })
 }
+export function getEnterpriseDetail(id) {
+    return request({
+        url: `/park/enterprise/${id}`,
+        method: 'GET'
+    })
+}
