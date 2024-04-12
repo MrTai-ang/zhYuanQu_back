@@ -29,10 +29,10 @@
         </template>
    </el-table-column>
       <el-table-column label="操作" width="180">
-        <template #default="scope">
+        <template #default="rentObj">
           <el-button size="mini" type="text">续租</el-button>
-          <el-button size="mini" type="text">退租</el-button>
-          <el-button size="mini" type="text">删除</el-button>
+          <el-button size="mini" type="text" :disabled="rentObj.row.status===3?true:false" @click="rentingOut(rentObj.row.id)">退租</el-button>
+          <el-button size="mini" type="text" :disabled="rentObj.row.status!==3">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -120,7 +120,7 @@
   </div>
 </template>
 <script>
-import { getEnterpriseListAPI, delExterpriseAPI, getRentBuildListAPI,addRentAPI,getRentListAPI } from '@/api/enterprise'
+import { getEnterpriseListAPI, delExterpriseAPI, getRentBuildListAPI,addRentAPI,getRentListAPI,rentingOut } from '@/api/enterprise'
 import { uploadFile} from '@/api/common'
 export default {
   name: 'EnterPrise',
@@ -162,6 +162,14 @@ export default {
     this.getEnterpriseList()
   },
   methods: {
+    rentingOut(id) {
+      console.log('退租id',id);
+      this.$confirm('您确定要退租吗', '温馨提示').then(async () => {
+        await rentingOut(id)
+this.$message.success('退租成功')
+        
+      }).catch(()=>{})
+    },
     formatInfoType(status) {
   const MAP = {
     0: 'warning',

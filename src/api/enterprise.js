@@ -55,3 +55,11 @@ export function getRentListAPI(id) {
         url: `/park/enterprise/rent/${id}`
     })
 }
+
+export function rentingOut(id) {
+    return request({
+        method: 'put',
+        url: `/park/enterprise/rent/${id}`,
+
+    })
+}
