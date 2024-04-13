@@ -102,6 +102,11 @@ export const routes = [
       meta: { title: '告警记录' }
     }]
   },
+  {
+    path: '/sys/addRole',
+    component: () => import('@/views/System/Role/AddRole')
+
+  },
 
   {
     path: '/sys',
