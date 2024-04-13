@@ -6,9 +6,7 @@
         <span>|</span>
         <span>添加角色</span>
       </div>
-      <div class="right">
-        黑马程序员
-      </div>
+      <div class="right" />
     </header>
     <main class="add-main">
       <div class="step-container">
@@ -21,13 +19,31 @@
       <div v-show="activeStep === 1" class="form-container">
         <div class="title">角色信息</div>
         <div class="form">
-          角色信息内容
+          <el-form ref="roleForm" class="form-box" :model="roleForm" :rules="roleRules">
+            <el-form-item label="角色名称" prop="roleName">
+              <el-input v-model="roleForm.roleName" />
+            </el-form-item>
+            <el-form-item label="角色描述" prop="remark">
+              <el-input v-model="roleForm.remark" />
+            </el-form-item>
+          </el-form>
         </div>
       </div>
       <div v-show="activeStep === 2" class="form-container">
         <div class="title">权限配置</div>
         <div class="form">
-          权限配置内容
+          <div v-for="item in treeList" :key="item.id" class="tree-item">
+            <div class="tree-title">{{ item.title }}</div>
+            <el-tree
+              ref="tree"
+              :data="item.children"
+              show-checkbox
+              default-expand-all
+              node-key="id"
+              highlight-current
+              :props="{ label: 'title' }"
+            />
+          </div>
         </div>
       </div>
       <div v-show="activeStep === 3" class="form-container">
@@ -47,20 +63,64 @@
   </div>
 </template>
 <script>
+import { getTreeListAPI } from '@/api/system'
 export default {
   data() {
     return {
-      activeStep: 1
+      activeStep: 1,
+      treeList: [],
+      roleForm: {
+        roleName: '',
+        remark: ''
+      },
+      roleRules: {
+        roleName: [
+          { required: true, message: '请输入角色名称', trigger: 'blur' }
+        ],
+        remark: [
+          { required: true, message: '请输入描述信息', trigger: 'blur' }
+        ]
+
+      }
     }
   },
+  created() {
+    this.getTreeList()
+  },
   methods: {
+    async getTreeList() {
+      const res = await getTreeListAPI()
+      console.log('addrole的res:', res)
+      this.treeList = res.data
+    },
     decreseStep() {
       if (this.activeStep === 1) return
       this.activeStep--
     },
     increseStep() {
       if (this.activeStep === 3) return
-      this.activeStep++
+      if (this.activeStep === 1) {
+        this.$refs.roleForm.validate(flag => {
+          if (!flag) return
+          this.activeStep++
+        })
+      } else if (this.activeStep === 2) {
+        // 当前是权限信息状态
+        this.roleForm.perms = []
+        this.$refs.tree.forEach(tree => {
+          this.roleForm.perms.push(tree.getCheckedKeys())
+        })
+        // 如果长度为零 没有选中任何东西
+        if (this.roleForm.perms.flat().length === 0) {
+          this.$message({
+            type: 'error',
+            message: '请至少选择一个权限点'
+          })
+        } else {
+          // 进入到下一页
+          this.activeStep++
+        }
+      }
     }
   }
 }
