@@ -2,8 +2,11 @@
 // 在这里写路由导航
 import router from '@/router'
 import store from '@/store/index'
+
+import { getProfileAPI } from '@/api/user'
+
 const whiteList = ['/login', '/404'] // 声明白名单
-router.beforeEach((to, from, next) => {
+router.beforeEach(async(to, from, next) => {
   // to: 跳转的路由对象
   // from:从哪里来
   // next:放行next(),重定向next(路径)
@@ -13,6 +16,9 @@ router.beforeEach((to, from, next) => {
       next('/')
     } else {
       next()
+      // 登录之后，获取用户的权限信息
+      const res = await getProfileAPI()
+      console.log('用户权限信息res:', res)
     }
   } else {
     if (whiteList.includes(to.path)) {
