@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import user from './modules/user'
+import menu from '@/store/modules/menu'
 import { loginAPI } from '@/api/user'
 import { setToken, getToken, removeToken } from '@/utils/auth'
 Vue.use(Vuex)
@@ -8,7 +9,8 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   // 组合模块的配置项
   modules: {
-    user
+    user,
+    menu
   },
   state: {
     token: getToken()
