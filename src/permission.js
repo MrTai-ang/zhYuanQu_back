@@ -21,6 +21,11 @@ function getSeccondRoutePermission(permission) {
   return Array.from(new Set(secondpermission))
 }
 function getRoutes(firstPermission, secondPermission, asyncRoutes) {
+  // 判断当前登录人是不是管理员,如果是管理员，则不用进行筛选，返回全部路由
+  if (firstPermission.includes('*'))
+  {
+    return asyncRoutes
+    }
   const firstRoutes = asyncRoutes.filter(item => firstPermission.includes(item.permission))
   console.log('firstRoutes', firstRoutes)
   const routes = firstRoutes.map(item => {
